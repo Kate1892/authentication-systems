@@ -1,12 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { getFormDataLS } from '../../utils/getFormDataLS'
+import { AuthStatus } from '../types'
+
+const { LSdata } = getFormDataLS()
 
 const initialState = {
-  usersName: '',
-  password: '',
-  isPasswordVisible: false,
-  phoneNumber: '',
-  saveUserData: false,
+  usersName: LSdata.name,
+  password_: LSdata.password,
+  isPasswordVisible: LSdata.isVisible,
+  phoneNumber_: LSdata.number,
+  saveUserData: LSdata.isSave,
   avatarFile: '',
+  code: '',
+  isAuth: AuthStatus.OFF,
 }
 
 export const userDataSlice = createSlice({
@@ -17,16 +23,22 @@ export const userDataSlice = createSlice({
       state.usersName = action.payload
     },
     setPassword(state, action) {
-      state.password = action.payload
+      state.password_ = action.payload
     },
     changePasswordVisibility(state, action) {
-      state.isPasswordVisible = !state.isPasswordVisible
+      state.isPasswordVisible = action.payload
     },
     setPhoneNumber(state, action) {
-      state.phoneNumber = action.payload
+      state.phoneNumber_ = action.payload
+    },
+    setAvatarFile(state, action) {
+      state.avatarFile = action.payload
     },
     changeSaveUser(state, action) {
-      state.saveUserData = !state.saveUserData
+      state.saveUserData = action.payload
+    },
+    setIsAuth(state, action) {
+      state.isAuth = action.payload
     },
   },
 })
@@ -37,6 +49,8 @@ export const {
   changePasswordVisibility,
   setPhoneNumber,
   changeSaveUser,
-} = logSlice.actions
+  setAvatarFile,
+  setIsAuth,
+} = userDataSlice.actions
 
-export default logSlice.reducer
+export default userDataSlice.reducer
