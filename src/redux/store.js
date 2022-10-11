@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
-import userData from './slice/slice'
+import auth from './slices/slice'
 
 export const store = configureStore({
   reducer: {
-    userData,
+    auth,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

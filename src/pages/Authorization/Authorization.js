@@ -1,15 +1,14 @@
-import React, { useEffect, useRef } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Navigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { selectUsersData } from '../../redux/slice/selectors'
+import { selectUsersData } from '../../redux/slices/selectors'
 import {
   setPassword,
   setPhoneNumber,
   changePasswordVisibility,
   changeSaveUser,
   setIsAuth,
-} from '../../redux/slice/slice'
+} from '../../redux/slices/slice'
 import { useInput } from '../../hooks/hooks'
 import {
   PasswordInput,
@@ -17,13 +16,17 @@ import {
   PhoneNumberInput,
 } from '../../components/Inputs/Inputs'
 import styles from '../forms.module.scss'
-import axios from 'axios'
 import { useGetDataLS } from '../../hooks/hooks'
 import { AuthStatus } from '../../redux/types'
 
+import { selectIsAuth } from '../../redux/slices/slice'
+import { fetchAuth } from '../../redux/slices/asyncAction'
+
 export const Authorization = () => {
   const dispatch = useDispatch()
-  const { phoneNumber_, isPasswordVisible, password_, saveUserData, isAuth } =
+  const isAuth = useSelector(selectIsAuth)
+
+  const { phoneNumber_, isPasswordVisible, password_, saveUserData } =
     useSelector(selectUsersData)
 
   const phoneNumber = useInput(
@@ -34,10 +37,27 @@ export const Authorization = () => {
   )
   const password = useInput(password_, setPassword, { isEmpty: true })
 
-  const handleSubmit = (e, formData) => {
+  // const handleSubmit = () => {
+  //   e.preventDefault()
+  //   console.log(e.target[0].value)
+  //   console.log(e.target[1].value)
+  // }
+
+  const handleSubmit = async e => {
     e.preventDefault()
-    console.log(e.target[0].value)
-    console.log(e.target[1].value)
+    const dataObj = {
+      phoneNumber: e.target[0].value,
+      password: e.target[1].value,
+    }
+    console.log(dataObj)
+
+    const data = await dispatch(fetchAuth(dataObj))
+    if (!data.payload) {
+      return alert('Ошибка при авторизации')
+    }
+    if ('token' in data.payload) {
+      window.localStorage.setItem('token', data.payload.token)
+    }
   }
 
   const setPasswordVisibility = e => {
@@ -63,7 +83,7 @@ export const Authorization = () => {
     saveUserData,
   })
 
-  if (isAuth === 'on') {
+  if (isAuth) {
     return <Navigate to='/personal-area' />
   } else if (isAuth === 'error') {
     return (

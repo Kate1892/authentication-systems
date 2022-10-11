@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react'
-import { NavLink } from 'react-router-dom'
-import { selectUsersData } from '../../redux/slice/selectors'
+import React, { useState, useRef } from 'react'
+import { NavLink, Navigate } from 'react-router-dom'
+import { selectUsersData } from '../../redux/slices/selectors'
 import { useSelector, useDispatch } from 'react-redux'
 import { useInput } from '../../hooks/hooks'
 import {
@@ -13,14 +13,19 @@ import {
   setPhoneNumber,
   setPassword,
   changePasswordVisibility,
-  setAvatarFile,
   setUsersName,
-} from '../../redux/slice/slice'
+} from '../../redux/slices/slice'
 import styles from '../forms.module.scss'
 import { useGetDataLS } from '../../hooks/hooks'
+import axios from '../../axios'
+import { selectIsAuth } from '../../redux/slices/slice'
+import { fetchRegister } from '../../redux/slices/asyncAction'
 
 export const Registration = () => {
   const dispatch = useDispatch()
+  const [avatarUrl, setAvatarUrl] = useState('')
+  const fileInputRef = useRef(null)
+  const isAuth = useSelector(selectIsAuth)
 
   const setPasswordVisibility = e => {
     if (e.target.checked) {
@@ -30,14 +35,8 @@ export const Registration = () => {
     }
   }
 
-  const {
-    phoneNumber_,
-    code,
-    password_,
-    isPasswordVisible,
-    avatarFile,
-    usersName,
-  } = useSelector(selectUsersData)
+  const { phoneNumber_, password_, isPasswordVisible, avatarFile, usersName } =
+    useSelector(selectUsersData)
 
   const phoneNumber = useInput(
     phoneNumber_,
@@ -48,31 +47,55 @@ export const Registration = () => {
   const password = useInput(password_, setPassword, { isEmpty: true })
   const name = useInput(usersName, setUsersName, { isEmpty: true })
 
-  const handleImageChange = e => {
-    if (e.target.files.length) {
-      dispatch(setAvatarFile(URL.createObjectURL(e.target.files[0])))
+  const handleImageChange = async e => {
+    try {
+      const formData = new FormData()
+      formData.append('image', e.target.files[0])
+      const { data } = await axios.post('/upload', formData)
+      setAvatarUrl(data.url)
+    } catch (err) {
+      console.warn(err)
+      alert('Ошибка загрузки файла')
     }
   }
-  const handleImageUpload = () => {}
 
   const imageUploadButtonClick = e => {
     e.preventDefault()
     fileInputRef.current.click()
   }
 
-  const fileInputRef = useRef(null)
+  const handleSubmit = async e => {
+    e.preventDefault()
+
+    const dataObj = {
+      fullName: e.target[0].value,
+      phoneNumber: e.target[1].value,
+      password: e.target[2].value,
+      avatarUrl,
+    }
+    console.log(dataObj)
+    const data = await dispatch(fetchRegister(dataObj))
+    if (!data.payload) {
+      return alert('Ошибка регистрации')
+    }
+    if ('token' in data.payload) {
+      window.localStorage.setItem('token', data.payload.token)
+    }
+  }
 
   useGetDataLS({
     phoneNumber_,
     password_,
     isPasswordVisible,
     usersName,
-    avatarFile,
   })
 
+  if (isAuth) {
+    return <Navigate to='/personal-area' />
+  }
   return (
     <>
-      <form className={styles.authorizationBox}>
+      <form onSubmit={handleSubmit} className={styles.authorizationBox}>
         <h2>Регистрация</h2>
         <div className={styles.inputBox}>
           <NameInput
@@ -141,12 +164,18 @@ export const Registration = () => {
         </div>
         <div
           className={
-            avatarFile
+            avatarUrl
               ? styles.imagePreviewBox
               : styles.imagePreviewBox + styles.display
           }
         >
-          {avatarFile && <img src={avatarFile} alt='avatar' height={100} />}
+          {avatarUrl && (
+            <img
+              src={`http://localhost:4000${avatarUrl}`}
+              alt='avatar'
+              height={100}
+            />
+          )}
         </div>
         <div className={styles.buttonBlock}>
           <button className={styles.submitButton} type='submit'>

@@ -133,7 +133,6 @@ export const useGetDataLS = ({
   isPasswordVisible = false,
   saveUserData = false,
   usersName = '',
-  avatarFile = '',
 }) => {
   const isMounted = useRef(false)
   useEffect(() => {
@@ -143,18 +142,10 @@ export const useGetDataLS = ({
         password: password_,
         isVisible: isPasswordVisible,
         name: usersName,
-        avatar: avatarFile,
         isSave: saveUserData,
       })
       localStorage.setItem('formsData', json)
     }
     isMounted.current = true
-  }, [
-    phoneNumber_,
-    password_,
-    isPasswordVisible,
-    usersName,
-    avatarFile,
-    saveUserData,
-  ])
+  }, [phoneNumber_, password_, isPasswordVisible, usersName, saveUserData])
 }

@@ -1,15 +1,14 @@
-import React, { useRef, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
-import { selectUsersData } from '../../redux/slice/selectors'
+import { selectUsersData } from '../../redux/slices/selectors'
 import { useSelector } from 'react-redux'
 import { useInput } from '../../hooks/hooks'
 import { PhoneNumberInput } from '../../components/Inputs/Inputs'
-import { setPhoneNumber } from '../../redux/slice/slice'
+import { setPhoneNumber } from '../../redux/slices/slice'
 import styles from '../forms.module.scss'
 import { useGetDataLS } from '../../hooks/hooks'
 
 export const PasswordRec = () => {
-  const { phoneNumber_, code } = useSelector(selectUsersData)
+  const { phoneNumber_ } = useSelector(selectUsersData)
   const phoneNumber = useInput(
     phoneNumber_,
     setPhoneNumber,

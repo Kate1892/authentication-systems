@@ -12,7 +12,7 @@ export const onChangePN = e => {
     return (input.value = '')
   }
 
-  if (input.value.length != selectionStart) {
+  if (input.value.length !== selectionStart) {
     if (e.nativeEvent.data && /\D/g.test(e.nativeEvent.data)) {
       input.value = numbers
     }
@@ -20,8 +20,8 @@ export const onChangePN = e => {
   }
 
   if (['7', '8', '9'].indexOf(numbers[0]) > -1) {
-    if (numbers[0] == '9') numbers = '7' + numbers
-    let firstSymbols = numbers[0] == '8' ? '8' : '+7'
+    if (numbers[0] === '9') numbers = '7' + numbers
+    let firstSymbols = numbers[0] === '8' ? '8' : '+7'
     formattedNumber = firstSymbols + ' '
     if (numbers.length > 1) {
       formattedNumber += '(' + numbers.substring(1, 4)
@@ -46,7 +46,7 @@ export const onKeyDownPN = e => {
   const element = e.target
   let inputValue = element.value.replace(/\D/g, '')
 
-  if (e.keyCode === 8 && getInputNumbers(element).length == 1) {
+  if (e.keyCode === 8 && getInputNumbers(element).length === 1) {
     element.value = ''
   } else if ([8, 46].indexOf(e.keyCode) > -1 && inputValue.length > 1) {
     let symToClear = ''
@@ -60,6 +60,8 @@ export const onKeyDownPN = e => {
         if (element.selectionStart) {
           symToClear = element.value[element.selectionStart]
         }
+        break
+      default:
         break
     }
     if (symToClear && /\D/.test(symToClear)) e.preventDefault()
