@@ -65,7 +65,6 @@ export const useValidation = (value, validations) => {
   const [withSpace, setWithSpace] = useState(false)
 
   useEffect(() => {
-    console.log(value)
     for (const validation in validations) {
       switch (validation) {
         case 'isEmpty':

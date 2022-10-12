@@ -73,7 +73,7 @@ export const Registration = () => {
       password: e.target[2].value,
       avatarUrl,
     }
-    console.log(dataObj)
+
     const data = await dispatch(fetchRegister(dataObj))
     if (!data.payload) {
       return alert('Ошибка регистрации')
@@ -81,6 +81,10 @@ export const Registration = () => {
     if ('token' in data.payload) {
       window.localStorage.setItem('token', data.payload.token)
     }
+  }
+
+  const onClickRemoveImage = () => {
+    setAvatarUrl('')
   }
 
   useGetDataLS({
@@ -170,11 +174,22 @@ export const Registration = () => {
           }
         >
           {avatarUrl && (
-            <img
-              src={`https://shelygina-forms.herokuapp.com${avatarUrl}`}
-              alt='avatar'
-              height={100}
-            />
+            <>
+              <img
+                src={`https://shelygina-forms.herokuapp.com${avatarUrl}`}
+                alt='avatar'
+                height={100}
+              />
+              <div className={styles.buttonBlock}>
+                <button
+                  className={styles.submitButton}
+                  onClick={onClickRemoveImage}
+                  style={{ marginBottom: '5px', color: '#ff073a' }}
+                >
+                  X
+                </button>
+              </div>
+            </>
           )}
         </div>
         <div className={styles.buttonBlock}>

@@ -43,7 +43,6 @@ export const Authorization = () => {
       phoneNumber: e.target[0].value,
       password: e.target[1].value,
     }
-    console.log(dataObj)
 
     const data = await dispatch(fetchAuth(dataObj))
     if (!data.payload) {
