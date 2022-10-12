@@ -8,7 +8,7 @@ const { LSdata } = getFormDataLS()
 const initialState = {
   // LSdata
   data: null,
-  status: 'loading',
+  status: '',
   isPasswordVisible: LSdata.isVisible,
   code: '',
 
