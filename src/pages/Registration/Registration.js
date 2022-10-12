@@ -35,7 +35,7 @@ export const Registration = () => {
     }
   }
 
-  const { phoneNumber_, password_, isPasswordVisible, avatarFile, usersName } =
+  const { phoneNumber_, password_, isPasswordVisible, status, usersName } =
     useSelector(selectUsersData)
 
   const phoneNumber = useInput(
@@ -178,7 +178,15 @@ export const Registration = () => {
           )}
         </div>
         <div className={styles.buttonBlock}>
-          <button className={styles.submitButton} type='submit'>
+          <button
+            disabled={
+              !phoneNumber.isInputValid ||
+              !password.isInputValid ||
+              status === 'loading'
+            }
+            className={styles.submitButton}
+            type='submit'
+          >
             зарегистрироваться
           </button>
           <div className={styles.formLinks}>

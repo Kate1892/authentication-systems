@@ -26,7 +26,7 @@ export const Authorization = () => {
   const dispatch = useDispatch()
   const isAuth = useSelector(selectIsAuth)
 
-  const { phoneNumber_, isPasswordVisible, password_, saveUserData } =
+  const { phoneNumber_, isPasswordVisible, password_, saveUserData, status } =
     useSelector(selectUsersData)
 
   const phoneNumber = useInput(
@@ -36,12 +36,6 @@ export const Authorization = () => {
     true
   )
   const password = useInput(password_, setPassword, { isEmpty: true })
-
-  // const handleSubmit = () => {
-  //   e.preventDefault()
-  //   console.log(e.target[0].value)
-  //   console.log(e.target[1].value)
-  // }
 
   const handleSubmit = async e => {
     e.preventDefault()
@@ -142,7 +136,11 @@ export const Authorization = () => {
         <div className={styles.buttonBlock}>
           <button
             className={styles.submitButton}
-            disabled={!phoneNumber.isInputValid || !password.isInputValid}
+            disabled={
+              !phoneNumber.isInputValid ||
+              !password.isInputValid ||
+              status === 'loading'
+            }
             type='submit'
           >
             войти
