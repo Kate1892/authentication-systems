@@ -53,7 +53,7 @@ export const Authorization = () => {
 
     const data = await dispatch(fetchAuth(dataObj))
     if (!data.payload) {
-      return alert('Ошибка при авторизации')
+      return alert('Ошибка авторизации')
     }
     if ('token' in data.payload) {
       window.localStorage.setItem('token', data.payload.token)
@@ -85,22 +85,7 @@ export const Authorization = () => {
 
   if (isAuth) {
     return <Navigate to='/personal-area' />
-  } else if (isAuth === 'error') {
-    return (
-      <div className={styles.authorizationBox}>
-        <h2>Неверный логин или пароль :(</h2>
-        <div className={styles.buttonBlock}>
-          <button
-            className={styles.submitButton}
-            onClick={() => dispatch(setIsAuth(AuthStatus.OFF))}
-          >
-            Попробовать снова
-          </button>
-        </div>
-      </div>
-    )
   }
-
   return (
     <>
       <form onSubmit={handleSubmit} className={styles.authorizationBox}>
