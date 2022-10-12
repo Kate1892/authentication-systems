@@ -171,7 +171,7 @@ export const Registration = () => {
         >
           {avatarUrl && (
             <img
-              src={`https://shelygina-forms.herokuapp.com/${avatarUrl}`}
+              src={`https://shelygina-forms.herokuapp.com${avatarUrl}`}
               alt='avatar'
               height={100}
             />
